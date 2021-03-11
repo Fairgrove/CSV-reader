@@ -90,8 +90,11 @@ def getFile():
         key_bindings=kb,
     )
     
-    chooseFile = '.\\data\\' + chooseDir + '\\' + chooseFile
-    return chooseFile
+    if chooseFile != 'all':
+        chooseFile = '.\\data\\' + chooseDir + '\\' + chooseFile
+
+    return chooseFile, chooseDir
+    
 
 def getRow(filePath):
     with open(filePath) as csv_file:
@@ -149,8 +152,53 @@ def readData(filePath, dataRow):
     plt.xlabel('Time')
     plt.show()
 
+def readAllData(allDir, dataRow):
+    filePath = getDataPaths(allDir)
+    
+    print ('Plotting ' + allDir)
+    raw = [[]]
+    timestamp = []
+    data = []
+    
+    for i in filePath:
+        with open(i) as csv_file: 
+            csv_reader = csv.reader(csv_file, delimiter=',')
+            line_count = 0
+            i = 0
+            
+            for row in csv_reader:
+                if(line_count > 0):
+                    # print (row)
+                    raw.insert(i,row) #arr[i] = row
+                    i += 1
+                    line_count += 1
+                
+                if(line_count == 0):
+                    line_count += 1
+
+    for j in range(line_count-1):
+        if raw[j][dataRow[0]] == 'NaN':
+            j += 1
+        else:
+            timestamp.insert(j, int(raw[j][0]))
+            data.insert(j, float(raw[j][dataRow[0]])) 
+
+    dates = [dt.datetime.fromtimestamp(ts) for ts in timestamp]
+
+    plt.plot(dates, data)
+    plt.ylabel(dataRow[1])
+    plt.xlabel('Time')
+    plt.show()
+
+    
+
+def decideReader(filePath):
+    if filePath[0] == 'all':
+        readAllData(filePath[1], getRow(filePath[0]))
+    else:
+        readData(filePath[0], getRow(filePath[0]))
+
 
 #getRow('.\data\GOMX4A ADCS - ADCS ukf\gswebdump_GOMX4A_ADCS_adcs_ukf_q_02_02_2018_0000_to_01_05_2018_0000.csv')
-while(1):
-    f = getFile()
-    readData(f, getRow(f))
+f = getFile()
+decideReader(f)
