@@ -84,7 +84,7 @@ def getFile():
     )
 
     chooseFile = prompt(
-        "Gimme a directory: \n",
+        "Gimme a file: \n",
         completer=fileCompleter,
         complete_while_typing=True,
         key_bindings=kb,
