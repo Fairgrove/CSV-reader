@@ -7,4 +7,7 @@ prompt_toolkit
 ```
 
 
-Data is placed in ´´´.\data\<folderName>\fileName.csv´´´
+Data is placed in 
+´´´
+.\data\<folderName>\fileName.csv
+´´´
